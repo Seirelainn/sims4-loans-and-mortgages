@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Кредитный калькулятор Sims 4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f5f7fa;
+    }
+    .brand-header {
+      background: linear-gradient(90deg, #1A8CD3 0%, #114AAF 50%, #5B1C8E 100%);
+      color: #fff;
+      padding: 2rem 1rem;
+      border-radius: 0 0 2rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(30,60,114,.12);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .brand-logo {
+      font-weight: bold;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    .brand-sub {
+      font-size:1.15rem;
+      opacity:0.93;
+    }
+    .credit-card {
+      background: #fff;
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 18px rgba(30,60,114,0.07);
+      padding: 2rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .bank-btn {
+      background: linear-gradient(90deg, #5B1C8E 0%, #114AAF 50%, #1A8CD3 100%);
+      border: none;
+      color: #fff;
+      font-weight: 500;
+      border-radius: 2rem;
+      padding: 0.75rem 2.5rem;
+      font-family: inherit;
+      font-size: 1.05em;
+      transition: background .18s;
+    }
+    .bank-btn[disabled], .bank-btn.disabled {
+      background: #bfc9de !important;
+      color: #f7f7f7 !important;
+      cursor: not-allowed !important;
+      border: none;
+      opacity: 0.8;
+      box-shadow: none;
+    }
+    .bank-btn:hover:not([disabled]) {
+      background: linear-gradient(90deg, #1A8CD3 0%, #114AAF 50%, #5B1C8E 100%);
+    }
+    .second-bank-btn {
+      background: #ffffff !important;
+      color: #1A8CD3 !important;
+      border: 1.5px solid #1A8CD3 !important;
+      font-weight: 600;
+      transition: background .18s, color .18s;
+    }
+    .second-bank-btn:hover:not([disabled]) {
+      background: #1A8CD3 !important;
+      color: #fff !important;
+    }
+    .form-label { color: #0E2A5C; font-weight: 500;}
+    .alert-success, .alert-danger, .alert-info, .alert-warning { font-size: 1.05em; }
+    .mini { font-size:0.96em; color:#666;}
+    .to-pay-label {
+      background: #CAD9E5;
+      padding: .5em 1em;
+      margin-bottom: 1em;
+      border-radius: 1.2em;
+      font-size: 1.1em;
+      font-weight: 500;
+      color: #0E2A5C;
+      text-align: center;
+      letter-spacing: .03em;
+    }
+    .main-label {
+      font-size: 1.11em;
+      color: #0E2A5C;
+      font-weight: 500;
+      margin-bottom: 0.5em;
+    }
+    .main-label-2 {
+      font-size: 1.09em;
+      color: #0E2A5C;
+      font-weight: 500;
+      margin-bottom: 0.2em;
+    }
+    .credit-type-btn {
+      min-width: 120px;
+      background: #ffffff;
+      font-family: inherit;
+      font-size: 1.05em;
+      color: #1A8CD3;
+      border-radius: 2rem !important;
+      border: 1.5px solid #1A8CD3;
+    }
+    .credit-type-btn.active {
+      background: #1A8CD3 !important;
+      color: #fff !important;
+      border-color: #1A8CD3 !important;
+    }
+    .credit-type-btn:hover:not([disabled]) {
+      background: #1A8CD3 !important;
+      color: #fff !important;
+      border-color: #1A8CD3 !important;
+    }
+    .sim-input-group {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+    }
+    .sim-input {
+      padding-left: 2em !important;
+      font-size: 1.08em;
+      font-family: inherit;
+      border-radius: 1.2em;
+      border: 1.5px solid #E8F3FB;
+      background: #FFFFFF;
+      transition: border 0.17s;
+      box-shadow: none !important;
+    }
+    .sim-input:focus {
+      border-color: #1A8CD3;
+      background: #E8F3FB;
+      box-shadow: 0 2px 8px #e3e9f6;
+    }
+    .sim-sign {
+      position: absolute;
+      left: 0.85em;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #114AAF;
+      font-size: 1.12em;
+      pointer-events: none;
+      font-family: inherit;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+    .season-length-note {
+      font-size: 0.97em;
+      color: #888;
+      margin-top: -0.1em;
+      margin-bottom: 1em;
+      letter-spacing: .02em;
+    }
+    .season-edit-link {
+      font-size: 0.97em;
+      color: #114AAF;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-left: 0.5em;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+    }
+    .season-edit-link:focus {
+      outline: none;
+      text-decoration: none;
+    }
+    .season-btns-row {
+      display: flex;
+      gap: 0.5em;
+      margin-top: 0.4em;
+      margin-bottom: 0.7em;
+    }
+    .season-btn {
+      border: 1.5px solid #1A8CD3;
+      background: none;
+      color: #1A8CD3;
+      padding: 0.19em 1.1em;
+      font-size: 0.99em;
+      border-radius: 1.1em;
+      font-family: inherit;
+      font-weight: 500;
+      transition: background .16s, color .16s;
+      min-width: 0;
+      min-height: 0;
+      line-height: 1.3em;
+      outline: none;
+      margin: 0;
+    }
+    .season-btn.selected, .season-btn:active, .season-btn:hover:not([disabled]) {
+      background: #1A8CD3;
+      color: #fff;
+    }
+    .season-btn[disabled], .season-btn.disabled {
+      background: #CAD9E5 !important;
+      color: #E8F3FB !important;
+      border-color: #CAD9E5 !important;
+      opacity: .8;
+      cursor: not-allowed;
+    }
+    .badge-date {
+      display: inline-block;
+      font-weight: 600;
+      font-size: 1.09em;
+      border-radius: 1.2em;
+      padding: 0.40em 1.2em 0.40em 1.2em;
+      margin-bottom: 0.5em;
+      margin-right: 0.7em;
+      letter-spacing: .025em;
+      vertical-align: middle;
+    }
+    .badge-date.spring { background: #F9E0EE !important; color: #ae2172; }
+    .badge-date.summer { background: #FCF7B1 !important; color: #b69601; }
+    .badge-date.autumn { background: #FCE5C5 !important; color: #b95c00; }
+    .badge-date.winter { background: #d2e7fa !important; color: #165c8c; }
+    .history-link-btn {
+      background: none;
+      border: none;
+      color: #114AAF;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 1em;
+      margin-left: 0.2em;
+      padding: 0 0.2em;
+      font-family: inherit;
+      vertical-align: middle;
+    }
+    .history-table th, .history-table td {
+      font-size: 0.97em;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .sim-sign-history {
+      color: #114AAF;
+      font-weight: 700;
+      margin-left: 2px;
+      font-size: 1.07em;
+    }
+    .history-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.3em;
+      gap: 1em;
+    }
+    .history-header-title {
+      font-size: 1.09em;
+      color: #114AAF;
+      font-weight: 600;
+      letter-spacing: .03em;
+      text-align: left;
+    }
+    .history-header-back {
+      background: none;
+      border: none;
+      color: #114AAF;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 1.04em;
+      font-family: inherit;
+      padding: 0 0.35em;
+      transition: color .17s;
+      text-align: right;
+    }
+    .history-header-back:hover, .history-header-back:focus {
+      color: #0E2A5C;
+      text-decoration: underline;
+    }
+    .text-danger { color: #c30000 !important; font-weight: 600;}
+    .text-success { color: #09993c !important; font-weight: 600;}
+    ::placeholder {
+      color: #CAD9E5 !important;
+      opacity: 1 !important;
+    }
+    :-ms-input-placeholder {
+      color: #CAD9E5 !important;
+    }
+    ::-ms-input-placeholder {
+      color: #CAD9E5 !important;
+    }
+    .sim-input::placeholder {
+      color: #CAD9E5 !important;
+      opacity: 1 !important;
+    }
+    @media (max-width: 630px) {
+      .container, .brand-header { max-width: 99vw !important;}
+    }
+    @media (max-width: 410px) {
+      .season-btns-row { flex-direction: column; gap: 0.2em;}
+      .season-btn { width:100%;}
+      .history-header-row { flex-direction: column; gap: 0.3em; }
+    }
+    .days-late {
+      color: #c30000;
+      font-weight: bold;
+      font-size:1.13em;
+      margin-left: 0.55em;
+      letter-spacing: .01em;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <div class="brand-header text-center shadow-sm mb-4">
+    <div class="brand-logo">Sims 4 Банк</div>
+    <div class="brand-sub mb-1">Кредитный калькулятор</div>
+  </div>
+
+  <div class="container" style="max-width: 600px;">
+    <!-- Экран 1: Заявка -->
+    <div class="credit-card" id="screen1">
+      <h4 class="mb-3" style="color:#1e3c72;">Заявка на кредит</h4>
+      <form id="loan-form" autocomplete="off">
+        <div class="mb-3">
+          <label class="form-label">Тип кредита</label>
+          <div class="btn-group w-100 mb-2" role="group" id="credit-type-group">
+            <button type="button" class="btn btn-outline-primary credit-type-btn active" data-type="consumer">Потребительский</button>
+            <button type="button" class="btn btn-outline-primary credit-type-btn" data-type="mortgage">Ипотека</button>
+            <button type="button" class="btn btn-outline-primary credit-type-btn" data-type="business">Бизнес</button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Сумма кредита</label>
+          <div class="sim-input-group">
+            <span class="sim-sign">§</span>
+            <input type="text" inputmode="numeric" pattern="[0-9 ]*" class="form-control sim-input" id="amount" 
+              autocomplete="off" maxlength="10" placeholder="Например, 26 000">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Срок (дней)</label>
+          <input type="number" min="1" max="50" step="1" class="form-control sim-input" id="term" autocomplete="off" placeholder="50" style="padding-left:1em;">
+        </div>
+        <div class="mb-3">
+          <label class="form-label mb-1">Ваша деятельность</label>
+          <div class="btn-group w-100 mb-2" role="group" id="career-group">
+            <button type="button" class="btn btn-outline-primary credit-type-btn active" data-career="official">Официальная</button>
+            <button type="button" class="btn btn-outline-primary credit-type-btn" data-career="unofficial">Неофициальная</button>
+          </div>
+        </div>
+        <div id="income-fields"></div>
+        <div class="mb-3">
+          <label class="form-label">Дата получения кредита</label>
+          <div class="d-flex gap-2">
+            <div class="flex-grow-1">
+              <select class="form-select sim-input" id="weekday">
+                <option value="0">вс</option>
+                <option value="1">пн</option>
+                <option value="2">вт</option>
+                <option value="3">ср</option>
+                <option value="4">чт</option>
+                <option value="5">пт</option>
+                <option value="6">сб</option>
+              </select>
+            </div>
+            <div class="flex-grow-1">
+              <select class="form-select sim-input" id="season">
+                <option value="0">весна</option>
+                <option value="1">лето</option>
+                <option value="2">осень</option>
+                <option value="3">зима</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="season-length-note mini ps-1 mb-2" id="season-length-note">
+          Длина сезона — <span id="season-length-val">7</span> дней
+          <button type="button" class="season-edit-link" id="edit-season-length">изменить</button>
+        </div>
+        <div id="season-btns-row" class="season-btns-row" style="display:none;">
+          <button type="button" class="season-btn" id="btn7">7 дней</button>
+          <button type="button" class="season-btn" id="btn14">14 дней</button>
+          <button type="button" class="season-btn" id="btn28">28 дней</button>
+        </div>
+        <button type="submit" class="bank-btn w-100 mt-2" id="apply-btn">Подать заявку</button>
+        <div id="loan-form-error" class="alert alert-danger mt-3 d-none"></div>
+      </form>
+    </div>
+
+    <!-- Экран 2: Решение банка -->
+    <div class="credit-card d-none" id="screen2">
+      <div id="decision-content"></div>
+    </div>
+
+    <!-- Экран 3: Выплаты -->
+    <div class="credit-card d-none" id="screen3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="badge-date" id="pay-date"></span>
+        <button class="history-link-btn" id="history-btn" title="История платежей">История платежей</button>
+      </div>
+      <div class="main-label mb-1">Остаток по долгу: <span id="debt-remain"></span> §</div>
+      <div class="main-label-2 mb-2" id="days-left-label"></div>
+      <div id="overdue-penalty-wrap" class="mb-2" style="display:none;">
+        <div class="main-label-2 text-danger mb-1" id="overdue-wrap" style="display:none;">
+          <b>Задолженность:</b> <span id="overdue"></span> §
+        </div>
+        <div class="main-label-2 text-danger mb-1" id="penalty-wrap" style="display:none;">
+          <b>Пени:</b> <span id="penalty"></span> §
+        </div>
+      </div>
+      <div class="to-pay-label">
+        Сумма платежа на сегодня: <span id="to-pay"></span> §
+      </div>
+      <form id="payment-form" autocomplete="off">
+        <label class="form-label mb-1">Внести платеж</label>
+        <div class="sim-input-group mb-2">
+          <span class="sim-sign">§</span>
+          <input type="text" inputmode="numeric" pattern="[0-9 ]*" class="form-control sim-input" id="payment" maxlength="10" autocomplete="off" placeholder="">
+        </div>
+        <div id="pay-result"></div>
+        <button type="submit" class="bank-btn w-100 second-bank-btn" id="pay-btn">Оплатить</button>
+        <button type="button" class="bank-btn w-100 mt-2 d-none" id="next-day-btn">Следующий день</button>
+      </form>
+      <button class="bank-btn w-100 mt-3 d-none" id="new-loan-btn">Взять новый кредит</button>
+    </div>
+
+    <!-- Экран 4: История -->
+    <div class="credit-card d-none" id="screen4">
+      <div class="history-header-row mb-3">
+        <span class="history-header-title text-start">История платежей</span>
+        <button class="history-header-back text-end" id="back-to-pay-btn">Назад</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm history-table">
+          <thead>
+            <tr>
+              <th>День</th>
+              <th>Дата</th>
+              <th>Платеж</th>
+              <th>Задолж.</th>
+              <th>Пени</th>
+              <th>Досрочно</th>
+              <th>Остаток</th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const weekdays = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+    const seasons = ['весна', 'лето', 'осень', 'зима'];
+    const seasonClass = ['spring','summer','autumn','winter'];
+    const PENALTY_RATE = 0.10;
+    const stepRates = [
+      0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10,
+      0.12, 0.14, 0.16, 0.18, 0.20, 0.22, 0.24, 0.26, 0.28, 0.30
+    ];
+    const limits = [];
+    for (let i = 0; i < stepRates.length; i++) {
+      let p = i / (stepRates.length - 1);
+      let lim = 1 / 14 + p * (1 - 1 / 14);
+      limits.push(lim);
+    }
+    function getRate(payment, weeklyIncome) {
+      for (let i = 0; i < limits.length; i++) {
+        if (payment <= limits[i] * weeklyIncome) {
+          return stepRates[i];
+        }
+      }
+      return stepRates[stepRates.length - 1];
+    }
+    let state = {
+      screen: 1,
+      creditType: 'consumer',
+      sum: 0,
+      term: 0,
+      income: 0,
+      weekDay: 0,
+      season: 0,
+      daysInSeason: 7,
+      approved: false,
+      rate: 0,
+      payment: 0,
+      lastPayment: 0,
+      overpay: 0,
+      penalty: 0,
+      overdue: 0,
+      debtRemain: 0,
+      leftDays: 0,
+      paymentDay: 0,
+      seasonIdx: 0,
+      weekDayIdx: 0,
+      currentDay: 0,
+      loanHistory: [],
+      finished: false,
+      payMade: false,
+      notification: '',
+      recommendation: null,
+      career: 'official',
+      official: { wage: '', hours: '', days: '' },
+      unofficial: { weekly: '' }
+    };
+    function showScreen(n) {
+      for (let i = 1; i <= 4; ++i) {
+        document.getElementById('screen' + i).classList.add('d-none');
+      }
+      document.getElementById('screen' + n).classList.remove('d-none');
+    }
+    function updateSeasonLengthNote() {
+      document.getElementById('season-length-val').textContent = state.daysInSeason;
+      ['btn7','btn14','btn28'].forEach(btnid=>{
+        let btn = document.getElementById(btnid);
+        btn.classList.remove('selected','disabled');
+        btn.disabled = false;
+      });
+      if (state.daysInSeason===7) {
+        document.getElementById('btn7').classList.add('selected','disabled');
+        document.getElementById('btn7').disabled = true;
+      }
+      if (state.daysInSeason===14) {
+        document.getElementById('btn14').classList.add('selected','disabled');
+        document.getElementById('btn14').disabled = true;
+      }
+      if (state.daysInSeason===28) {
+        document.getElementById('btn28').classList.add('selected','disabled');
+        document.getElementById('btn28').disabled = true;
+      }
+    }
+    document.getElementById('edit-season-length').onclick = function(){
+      document.getElementById('season-btns-row').style.display = 'flex';
+      updateSeasonLengthNote();
+    };
+    document.getElementById('btn7').onclick = function(){
+      state.daysInSeason = 7; updateSeasonLengthNote(); document.getElementById('season-btns-row').style.display='none';
+    };
+    document.getElementById('btn14').onclick = function(){
+      state.daysInSeason = 14; updateSeasonLengthNote(); document.getElementById('season-btns-row').style.display='none';
+    };
+    document.getElementById('btn28').onclick = function(){
+      state.daysInSeason = 28; updateSeasonLengthNote(); document.getElementById('season-btns-row').style.display='none';
+    };
+    function formatSim(num) {
+      if (typeof num === 'string' && num.trim() === '') return '';
+      let str = Math.floor(num).toString().split('').reverse().join('');
+      let out = [];
+      for (let i = 0; i < str.length; i += 3) out.push(str.slice(i, i + 3));
+      return out.join(' ').split('').reverse().join('');
+    }
+    function parseSim(str) {
+      return parseInt(str.replace(/[^\d]/g,''),10)||0;
+    }
+    function makeSimInput(id, value = '', disabled = false) {
+      let el = document.getElementById(id);
+      el.value = value ? formatSim(value) : '';
+      el.disabled = disabled;
+      el.addEventListener('focus', function(e){
+        setTimeout(()=>{ if (el.setSelectionRange) el.setSelectionRange(el.value.length, el.value.length); }, 10);
+      });
+      el.addEventListener('input', function(e){
+        let v = el.value.replace(/[^\d]/g,'');
+        el.value = formatSim(v);
+      });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      makeSimInput('amount');
+      document.getElementById('amount').addEventListener('input', function() {
+        let v = this.value.replace(/[^\d]/g,'');
+        this.value = formatSim(v);
+      });
+    });
+    function renderIncomeForm() {
+      let block = document.getElementById('income-fields');
+      if (state.career === 'official') {
+        block.innerHTML = `
+          <div class="mb-2">
+            <label class="form-label">Часовая ставка</label>
+            <div class="sim-input-group">
+              <span class="sim-sign">§</span>
+              <input type="text" inputmode="numeric" pattern="[0-9 ]*" class="form-control sim-input" id="wage" maxlength="8" autocomplete="off" placeholder="Например, 120">
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Рабочих часов в день</label>
+            <input type="number" min="1" max="24" step="1" class="form-control sim-input" id="hours" autocomplete="off" placeholder="8" style="padding-left:1em;">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Рабочих дней в неделю</label>
+            <input type="number" min="1" max="7" step="1" class="form-control sim-input" id="days" autocomplete="off" placeholder="5" style="padding-left:1em;">
+          </div>
+        `;
+        makeSimInput('wage', state.official.wage);
+        document.getElementById('hours').value = state.official.hours || '';
+        document.getElementById('days').value = state.official.days || '';
+      } else {
+        block.innerHTML = `
+          <div class="mb-3">
+            <label class="form-label">Суммарный доход за последние 7 дней</label>
+            <div class="sim-input-group">
+              <span class="sim-sign">§</span>
+              <input type="text" inputmode="numeric" pattern="[0-9 ]*" class="form-control sim-input" id="weekly" maxlength="8" autocomplete="off" placeholder="Например, 7 000">
+            </div>
+          </div>
+        `;
+        makeSimInput('weekly', state.unofficial.weekly);
+      }
+    }
+    function getWeeklyIncome() {
+      if (state.career === 'official') {
+        let wage = parseSim(document.getElementById('wage').value || '');
+        let hours = parseInt(document.getElementById('hours').value || '0',10);
+        let days = parseInt(document.getElementById('days').value || '0',10);
+        state.official.wage = wage;
+        state.official.hours = hours;
+        state.official.days = days;
+        return wage * hours * days;
+      } else {
+        let weekly = parseSim(document.getElementById('weekly').value || '');
+        state.unofficial.weekly = weekly;
+        return weekly;
+      }
+    }
+    document.querySelectorAll('#career-group .credit-type-btn').forEach(btn => {
+      btn.onclick = function(){
+        document.querySelectorAll('#career-group .credit-type-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        state.career = btn.getAttribute('data-career');
+        renderIncomeForm();
+      }
+    });
+    renderIncomeForm();
+    document.querySelectorAll('.credit-type-btn[data-type]').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.credit-type-btn[data-type]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.creditType = btn.getAttribute('data-type');
+      }
+    });
+    document.getElementById('term').value = 50;
+    document.getElementById('term').addEventListener('input', function() {
+      let v = parseInt(this.value,10)||0;
+      if (v > 50) {
+        this.value = 50;
+      }
+    });
+    function findMaxOkTermAndOffer(sum, weeklyIncome, creditType) {
+      let maxOkTerm = 0;
+      let offer = null;
+      for (let n = 1; n <= 50; n++) {
+        let roughPayment = sum / n;
+        let rate = getRate(roughPayment, weeklyIncome);
+        let r1 = Math.pow(1 + rate, 1/7) - 1;
+        let ann = Math.pow(1 + r1, n);
+        if (ann - 1 === 0) continue;
+        let pay = sum * (r1 * ann) / (ann - 1);
+        let ceilPay = Math.ceil(pay);
+        let lastPay = Math.round(pay * n - ceilPay * (n-1));
+        if (lastPay >= 0) {
+          maxOkTerm = n;
+          offer = {rate, ceilPay, lastPay, n};
+        } else {
+          break;
+        }
+      }
+      return {maxOkTerm, offer};
+    }
+    function calcOffer(sum, weeklyIncome, days, creditType) {
+      let roughPayment = sum / days;
+      let rate = getRate(roughPayment, weeklyIncome);
+      let r1 = Math.pow(1 + rate, 1/7) - 1;
+      let ann = Math.pow(1 + r1, days);
+      if (ann - 1 === 0) return null;
+      let pay = sum * (r1 * ann) / (ann - 1);
+      let ceilPay = Math.ceil(pay);
+      let lastPay = Math.round(pay * days - ceilPay * (days-1));
+      return {rate, ceilPay, lastPay};
+    }
+    document.getElementById('loan-form').onsubmit = function(e) {
+      e.preventDefault();
+      let amountStr = document.getElementById('amount').value || '';
+      let termVal = parseInt(document.getElementById('term').value,10)||0;
+      let errorBlock = document.getElementById('loan-form-error');
+      errorBlock.classList.add('d-none');
+      errorBlock.textContent = '';
+      let hasError = false;
+      let weeklyIncome, wage, hours, days;
+      if (!amountStr.trim()) hasError = true;
+      let amount = parseSim(amountStr);
+      if (amount < 1) hasError = true;
+      if (!termVal || termVal < 1) hasError = true;
+      if (termVal > 50) {
+        termVal = 50;
+        document.getElementById('term').value = 50;
+      }
+      if (state.career === 'official') {
+        wage = parseSim(document.getElementById('wage').value || '');
+        hours = parseInt(document.getElementById('hours').value || '0',10);
+        days = parseInt(document.getElementById('days').value || '0',10);
+        if (!wage || !hours || !days) hasError = true;
+        weeklyIncome = wage * hours * days;
+      } else {
+        weeklyIncome = parseSim(document.getElementById('weekly').value || '');
+        if (!weeklyIncome) hasError = true;
+      }
+      if (hasError) {
+        errorBlock.classList.remove('d-none');
+        errorBlock.textContent = 'Пожалуйста, заполните все поля корректно.';
+        return;
+      }
+      state.sum = amount;
+      state.term = termVal;
+      state.income = weeklyIncome;
+      state.weekDayIdx = parseInt(document.getElementById('weekday').value,10)||0;
+      state.seasonIdx = parseInt(document.getElementById('season').value,10)||0;
+      state.loanHistory = [];
+      state.finished = false;
+
+      let {maxOkTerm, offer} = findMaxOkTermAndOffer(amount, weeklyIncome, state.creditType);
+      let userOffer = calcOffer(amount, weeklyIncome, termVal, state.creditType);
+
+      if (!userOffer || userOffer.lastPay < 0) {
+        let dc = document.getElementById('decision-content');
+        dc.innerHTML = `
+        <div class="alert alert-danger mb-3">Заявка отклонена: слишком длинный срок.</div>
+        <div class="mb-3">
+          <b>Рекомендуем взять кредит на срок до ${maxOkTerm} дней.</b><br>
+          ${offer ? `
+          Ставка: <b>${(offer.rate*100).toFixed(2)}%</b><br>
+          Ежедневный платёж: <b>${offer.ceilPay}</b> §<br>
+          Последний платёж: <b>${offer.lastPay}</b> §
+          ` : ''}
+        </div>
+        <button class="bank-btn w-100 second-bank-btn" id="toAppBtn">Вернуться к заявке</button>
+        `;
+        document.getElementById('toAppBtn').onclick = function() {
+          showScreen(1);
+        }
+        showScreen(2);
+        return;
+      }
+
+      state.rate = userOffer.rate;
+      state.approved = true;
+      const {payment, lastPayment, overpay, r1} = (function(){
+        let n = state.term;
+        let r = state.rate;
+        let r1 = Math.pow(1 + r, 1/7) - 1;
+        let ann = Math.pow(1 + r1, n);
+        let pay = state.sum * (r1 * ann) / (ann - 1);
+        let ceilPay = Math.ceil(pay);
+        let lastPayment = Math.round(pay * n - ceilPay * (n-1));
+        let overpay = (ceilPay * (n-1) + lastPayment - state.sum);
+        return {
+          payment: ceilPay,
+          lastPayment: lastPayment,
+          overpay: Math.round(overpay),
+          r1
+        };
+      })();
+      state.payment = payment;
+      state.lastPayment = lastPayment;
+      state.r1 = r1;
+      state.overpay = overpay;
+      state.debtRemain = state.sum;
+      state.leftDays = state.term;
+      state.overdue = 0;
+      state.penalty = 0;
+      state.payMade = false;
+      state.currentDay = 0;
+      state.paymentDay = 0;
+      state.finished = false;
+      showDecisionScreen(true);
+      showScreen(2);
+    };
+    function showDecisionScreen(approved) {
+      let dc = document.getElementById('decision-content');
+      if (approved) {
+        dc.innerHTML = `
+        <div class="alert alert-success mb-3">Кредит одобрен! Выплаты начнутся со следующего дня.</div>
+        <div class="mb-3">
+          <b>Сумма кредита:</b> <span>${formatSim(state.sum)}</span> §<br>
+          <b>Срок:</b> <span>${state.term}</span> дней<br>
+          <b>Ставка:</b> <span>${(state.rate*100).toFixed(2)}</span>% в неделю<br>
+          <b>Платеж:</b> <span>${formatSim(state.payment)}</span> § в день<br>
+          <b>Последний платеж:</b> <span>${formatSim(state.lastPayment)}</span> §<br>
+          <b>Переплата:</b> <span>${formatSim(state.overpay)}</span> §
+        </div>
+        <button class="bank-btn w-100 mb-2" id="takeLoanBtn">Получить кредит</button>
+        <button class="bank-btn w-100 second-bank-btn" id="backToFormBtn">Назад</button>
+        `;
+        document.getElementById('takeLoanBtn').onclick = function() {
+          state.paymentDay = 0;
+          state.currentDay = 0;
+          state.weekDay = state.weekDayIdx;
+          state.season = state.seasonIdx;
+          state.payMade = false;
+          state.notification = '';
+          state.finished = false;
+          showPayScreen();
+          showScreen(3);
+        };
+        document.getElementById('backToFormBtn').onclick = function() {
+          showScreen(1);
+        }
+      }
+    }
+
+    // --- ДАТА (badge): текущий день отсчёта
+    function getCurrentDateObj(stWeek, stSeason, daysInSeason, payIdx) {
+      // payIdx = номер платежа (1-й платёж — сразу после выдачи, т.е. первый день срока кредита)
+      let globalDay = (stWeek + payIdx) % 7;
+      let season = (stSeason + Math.floor((stWeek + payIdx) / daysInSeason)) % 4;
+      return { week: globalDay, season };
+    }
+    // --- ДАТА (история): номер платежа соответствует платежу, а не выдаче кредита
+    function getHistoryDateObj(stWeek, stSeason, daysInSeason, payIdx) {
+      // payIdx = 1 для первого платежа; история начинается со дня после выдачи кредита
+      let globalPayDay = stWeek + payIdx;
+      let week = globalPayDay % 7;
+      let season = (stSeason + Math.floor(globalPayDay / daysInSeason)) % 4;
+      return { week, season };
+    }
+
+    function showPayScreen() {
+      // payDayNum - номер платёжного дня (0 - первый день после выдачи кредита)
+      let payDayNum = state.currentDay + 1;
+      let dateObj = getCurrentDateObj(state.weekDayIdx, state.seasonIdx, state.daysInSeason, payDayNum);
+      let dateStr = weekdays[dateObj.week] + ", " + seasons[dateObj.season];
+      let payDateEl = document.getElementById('pay-date');
+      payDateEl.textContent = dateStr;
+      payDateEl.className = 'badge-date ' + seasonClass[dateObj.season];
+      document.getElementById('debt-remain').textContent = formatSim(state.debtRemain);
+
+      let leftDaysLabel = document.getElementById('days-left-label');
+      if (state.leftDays < 1 && (state.debtRemain > 0 || state.overdue > 0 || state.penalty > 0)) {
+        leftDaysLabel.innerHTML = `Осталось дней: <span class="days-late">просрочено!</span>`;
+      } else {
+        leftDaysLabel.innerHTML = `Осталось дней: <span>${Math.max(0, state.leftDays)}</span>`;
+      }
+
+      let hasOverdue = state.overdue > 0;
+      let hasPenalty = state.penalty > 0;
+      document.getElementById('overdue-penalty-wrap').style.display = (hasOverdue || hasPenalty)?'block':'none';
+      document.getElementById('overdue-wrap').style.display = hasOverdue?'block':'none';
+      document.getElementById('penalty-wrap').style.display = hasPenalty?'block':'none';
+      document.getElementById('overdue').textContent = formatSim(state.overdue);
+      document.getElementById('penalty').textContent = formatSim(state.penalty);
+
+      let todayPay = (state.leftDays > 1) ? state.payment : state.lastPayment;
+      let availPay = state.debtRemain + state.overdue + state.penalty;
+      let toPay = Math.min(todayPay + Math.round(state.overdue) + Math.round(state.penalty), availPay);
+
+      document.getElementById('to-pay').textContent = formatSim(toPay);
+
+      let payInput = document.getElementById('payment');
+      payInput.value = '';
+      payInput.maxLength = 10;
+      payInput.disabled = false;
+      payInput.classList.remove('disabled');
+      makeSimInput('payment');
+
+      let payBtn = document.getElementById('pay-btn');
+      let nextDayBtn = document.getElementById('next-day-btn');
+      let newLoanBtn = document.getElementById('new-loan-btn');
+      payBtn.disabled = false;
+      payBtn.classList.remove('disabled');
+      nextDayBtn.classList.add('d-none');
+      payBtn.classList.remove('d-none');
+      newLoanBtn.classList.add('d-none');
+
+      document.getElementById('pay-result').innerHTML = '';
+
+      document.getElementById('history-btn').onclick = function(){
+        renderHistory();
+        showScreen(4);
+      };
+
+      document.getElementById('payment-form').onsubmit = function(e) {
+        e.preventDefault();
+        if (state.finished) return;
+        let payStr = document.getElementById('payment').value || '';
+        if (!payStr.trim()) {
+          document.getElementById('pay-result').innerHTML = `<div class="alert alert-danger mt-2">Введите сумму для оплаты</div>`;
+          return;
+        }
+        let pay = parseSim(payStr);
+        if (!pay || pay < 1) pay = 0;
+        let maxPay = state.debtRemain + state.overdue + state.penalty;
+        if (pay > maxPay) pay = maxPay;
+
+        let todayPay = (state.leftDays > 0) ? ((state.leftDays > 1) ? state.payment : state.lastPayment) : state.payment;
+        let minToPay = Math.min(todayPay + state.overdue + state.penalty, maxPay);
+
+        let notification = '';
+        let ntype = '';
+        let newOverdue = 0;
+        let newPenalty = 0;
+        let dosr = 0;
+        let successMsg = '';
+
+        if (pay < minToPay) {
+          newOverdue = minToPay - pay;
+          newPenalty = Math.round(newOverdue * PENALTY_RATE);
+          notification = `У вас задолженность: <b>${formatSim(newOverdue)}</b> §<br>Пени начислены: <b>${formatSim(newPenalty)}</b> §`;
+          ntype = 'danger';
+        } else if (pay > minToPay) {
+          dosr = pay - minToPay;
+          notification = `Досрочная выплата: <b>${formatSim(dosr)}</b> §`;
+          ntype = 'success';
+          newOverdue = 0;
+          newPenalty = 0;
+        } else {
+          if (pay >= maxPay && state.debtRemain - (pay - state.overdue - state.penalty) <= 0) {
+            notification = `Кредит полностью погашен! 🎉`;
+            ntype = 'success';
+            successMsg = notification;
+          } else {
+            notification = `Успешное погашение!`;
+            ntype = 'info';
+          }
+          newOverdue = 0;
+          newPenalty = 0;
+        }
+
+        let payLeft = pay;
+        let payOverdue = Math.min(payLeft, state.overdue);
+        state.overdue -= payOverdue;
+        payLeft -= payOverdue;
+        let payPenalty = Math.min(payLeft, state.penalty);
+        state.penalty -= payPenalty;
+        payLeft -= payPenalty;
+        let mainPart = Math.min(payLeft, state.debtRemain);
+        state.debtRemain = Math.max(0, state.debtRemain - mainPart);
+
+        state.loanHistory.push({
+          day: state.currentDay + 1,
+          payIdx: state.currentDay + 1, // для генерации даты
+          pay: pay,
+          overdue: newOverdue > 0 ? Math.round(newOverdue) : undefined,
+          penalty: newPenalty > 0 ? Math.round(newPenalty) : undefined,
+          dosr: dosr > 0 ? dosr : undefined,
+          left: Math.round(state.debtRemain)
+        });
+
+        state.overdue = newOverdue;
+        state.penalty = newPenalty;
+        state.payMade = true;
+
+        if (state.debtRemain <= 0 && state.overdue === 0 && state.penalty === 0) {
+          state.finished = true;
+          document.getElementById('pay-result').innerHTML = `<div class="alert alert-success mt-2">Кредит полностью погашен! 🎉</div>`;
+          payInput.disabled = true;
+          payBtn.disabled = true;
+          payBtn.classList.add('disabled');
+          payBtn.classList.add('d-none');
+          nextDayBtn.classList.add('d-none');
+          newLoanBtn.classList.remove('d-none');
+          document.getElementById('new-loan-btn').onclick = function() { location.reload(); }
+        } else {
+          document.getElementById('pay-result').innerHTML = `<div class="alert alert-${ntype} mt-2">${notification}</div>`;
+          payInput.disabled = true;
+          payInput.classList.add('disabled');
+          payBtn.disabled = true;
+          payBtn.classList.add('disabled');
+          payBtn.classList.add('d-none');
+          nextDayBtn.classList.remove('d-none');
+        }
+      };
+
+      document.getElementById('next-day-btn').onclick = function() {
+        if (state.finished) return;
+        if (!state.payMade) return;
+        state.currentDay++;
+        if (state.leftDays > 0) state.leftDays = Math.max(state.leftDays - 1, 0);
+        state.payMade = false;
+        showPayScreen();
+      };
+    }
+
+    function renderHistory() {
+      let tb = document.getElementById('history-table-body');
+      tb.innerHTML = '';
+      // История: первый платёж - на 1-й день ПОЛЕ выдачи кредита (ноль - день выдачи)
+      for (let h of state.loanHistory) {
+        let dateObj = getHistoryDateObj(state.weekDayIdx, state.seasonIdx, state.daysInSeason, h.payIdx);
+        let dateStr = weekdays[dateObj.week] + ", " + seasons[dateObj.season];
+        tb.innerHTML += `<tr>
+          <td>${h.day}</td>
+          <td>${dateStr}</td>
+          <td>${formatSim(h.pay)} <span class="sim-sign-history">§</span></td>
+          <td>${h.overdue && h.overdue > 0 ? `<span class="text-danger">${formatSim(h.overdue)} <span class="sim-sign-history">§</span></span>` : ''}</td>
+          <td>${h.penalty && h.penalty > 0 ? `<span class="text-danger">${formatSim(h.penalty)} <span class="sim-sign-history">§</span></span>` : ''}</td>
+          <td>${h.dosr && h.dosr > 0 ? `<span class="text-success">${formatSim(h.dosr)} <span class="sim-sign-history">§</span></span>` : ''}</td>
+          <td>${formatSim(h.left)} <span class="sim-sign-history">§</span></td>
+        </tr>`;
+      }
+      document.getElementById('back-to-pay-btn').onclick = function() {
+        showScreen(3);
+      };
+    }
+    updateSeasonLengthNote();
+    showScreen(1);
+  </script>
+</body>
+</html>
